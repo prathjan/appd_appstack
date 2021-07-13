@@ -1,51 +1,66 @@
 # Deploying AppDynamics Java Agents with Cisco Intersight Service for Terraform on vSphere Infrastructure 
 ## Contents
         Use Cases
-        Pre-requisites, Guidelines
+        Pre-requisites
         Intersight Target configuration for AppDynamics and on prem entities
+        Setting up TFCB Workspaces
         Retrieve Java agent artifacts using AppDynamics Controller ZFI API's leveraging TFCB
         Deploy a Java application stack and instrument with Java agent leveraging TFCB
+        Generate Application Load
+        View Application Insights in AppDynamics and Intersight
         Try with a Sandbox
 
 
 ### Use Cases
-* As a DevOps and App developer, use IST (Intersight Service for Terraform) to retrieve and install AppDynamics java agents together with the Java Apps
+
+* As a DevOps and App developer, use IST (Intersight Service for Terraform) to instrument your Java Apps with AppDynamics Java agents
+
 * As DevOps and App Developer, use Intersight and AppDynamics to get app and infrastructure insights for Full Stack Observability
 
 ![alt text](https://github.com/prathjan/images/blob/main/appduse.png?raw=true)
 
-### Pre-requisites, Guidelines
+### Pre-requisites
 
-1. The VM template that you provision in Step 7 below will have a user "cisco/Cisco123" provisioned
+1. The VM template that you provision in Step 5 below will have a user "cisco/Cisco123" provisioned. Terraform scripts will use this user credentials to provision the VM.
 
-### Steps
+2. Sign up for a user account on Intersight.com. You will need Premier license as well as IWO license to complete this use case. 
 
-1. Sign up for a user account on Intersight.com. You will need Premier license as well as IWO license to complete this use case. 
+3. Sign up for a TFCB (Terraform for Cloud Business) at https://app.terraform.io/. Log in and generate the User API Key. You will need this when you create the TF Cloud Target in Intersight.
 
-2. Sign up for a TFCB (Terraform for Cloud Business) at https://app.terraform.io/. Log in and generate the User API Key. You will need this when you create the TF Cloud Target in Intersight.
+4. You will need access to a vSphere infrastructure with backend compute and storage provisioned
 
-3. You will need access to a vSphere infrastructure with backend compute and storage provisioned
+### Intersight Target configuration for AppDynamics and on prem entities
 
-4. You will log into your Intersight account and create the following targets. Please refer to Intersight docs for details on how to create these Targets:
+You will log into your Intersight account and create the following targets. Please refer to Intersight docs for details on how to create these Targets:
 
     Assist
+
     vSphere
+
     AppDynamics
+
     TFC Cloud
+
     TFC Cloud Agent - When you claim the TF Cloud Agent, please make sure you have the following added to your Managed Hosts. This is in addition to other local subnets you may have that hosts your kubernetes cluster like the IPPool that you may configure for your k8s addressing:
     NO_PROXY URL's listed:
 
             github-releases.githubusercontent.com
+
             github.com
+
             app.terraform.io
+
             registry.terraform.io
+
             releases.hashicorp.com
+
             archivist.terraform.io
 
+### Setting up TFCB Workspaces
 
-5. If you are leveraging CiscoDevNet organization in app.terraform,io, please go to Step 7. Else go to Step 6.
+1. If you are leveraging CiscoDevNet organization in app.terraform,io, please go to Step 2. Else go to Step 3.
 
-6. If you have your own TFCB organization and would like to use that, you will have to change the terraform configuration to account for this. Please clone the following repos and create your own corresponding GIT repos. Look for CiscoDeNet org references in the TF files and replace with your own organization:
+2. If you have your own TFCB organization and would like to use that, you will have to change the terraform configuration to account for this. Please clone the following repos and create your own corresponding GIT repos. Look for CiscoDevNet org references in the TF files and replace with your own organization:
 
         Clone following repos:
 
@@ -100,16 +115,17 @@ You will set up the following workspaces in TFCB and link to your newly created 
 
     appd_appstack -> <your_repo_appd_appstack.git> -> Execution mode as Agent
 
-Go to Step 8.
+Go to Step 4.
 
-7. You will set up the following workspaces in TFCB and link to the VCS repos specified. You will set the execution mode as noted below. Also, please use the workspace names provided since there are dependencies defined around it:
+3. You will set up the following workspaces in TFCB and link to the VCS repos specified. You will set the execution mode as noted below. Also, please use the workspace names provided since there are dependencies defined around it:
 
     appd_globalvar -> <your_repo_appd_globalvar.git> -> Execution mode as Remote
 
     appd_appstack -> <your_repo_appd_appstack.git> -> Execution mode as Agent
 
+Go to Step 4.
 
-8. You will open the workspace "appd_globalvar" in TFCB  and add the following variables specific to your AppDynamics environment. This workspace connects to the AppDynamics Controller specified her and downloads the commmands to instrument the Java applications:
+4. You will open the workspace "appd_globalvar" in TFCB  and add the following variables specific to your AppDynamics environment. This workspace connects to the AppDynamics Controller specified her and downloads the commmands to instrument the Java applications:
 
     appname = "Supercar-Trader". This is the application name in your AppDynamics Console.
 
@@ -138,13 +154,7 @@ Go to Step 8.
     Please also set this workspace to share its data with other workspaces in the organization by enabling Settings->General Settings->Share State Globally.
 
 
-9. You will execute the workspace "appd_globalvar" in TFCB.  A successful Run should show the output as follows:
-
-![alt text](https://github.com/prathjan/images/blob/main/appdapirun.png?raw=true)
-
-You now have the AppDynamics ZFI API outputs for the download and install commands for the Java agent instrumentation to be used in subsequent steps.
-
-7. You will open the workspace "appd_appstack" and add the following variables:
+5. You will open the workspace "appd_appstack" and add the following variables:
 
 vsphere_server = "10.88.168.24". This is the vSphere server IP.
 
@@ -180,25 +190,49 @@ A sample configuration would be as follows:
 
 ![alt text](https://github.com/prathjan/images/blob/main/appdvm.png?raw=true)
 
-8. You will verify that this workspace uses the Terraform Cloud Agent provisioned on your on prem infrastructure. You will execute the workspace "appd_appstack" in TFCB. A successful Run should show the output as follows. Executing this workspace installs a sample Java AppStack based on Tomcat with the AppDynamics Java agent instrumentation. The instrumentation of the AppDynamics ZeroAgent will automatically instrument any Java application that is deployed on Tomcat as well without the need for any manual instrumentation. We will take a look at a sample Java application deployment and auto instrumentation in Step 10.
+### Retrieve Java agent artifacts using AppDynamics Controller ZFI API's leveraging TFCB
+
+The TFCB workspace, appd_globalvar, automates the process of calling AppDynamics Controller API's to retrieve the Java agent artifacts. To initiate this, you will execute the workspace "appd_globalvar" in TFCB.  A successful Run should show the output as follows:
+
+![alt text](https://github.com/prathjan/images/blob/main/appdapirun.png?raw=true)
+
+You now have the AppDynamics ZFI API outputs for the download and install commands for the Java agent instrumentation to be used in subsequent steps.
+
+### Leverage TFCB to deploy a Java application stack and instrument with Java agent 
+
+You will open the TFCB workspace, "appd_appstack". 
+Verify that this workspace uses the Terraform Cloud Agent provisioned on your on prem infrastructure. 
+You will execute this workspace in TFCB. A successful Run should show the output as follows. 
 
 ![alt text](https://github.com/prathjan/images/blob/main/appdvmrun.png?raw=true)
 
+Executing this workspace installs a sample Java AppStack based on Tomcat with the AppDynamics Java agent instrumentation. The instrumentation of the AppDynamics ZeroAgent will automatically instrument any Java application that is deployed on Tomcat as well without the need for any manual instrumentation. We will take a look at a sample Java application deployment and auto instrumentation in the next step.
 
-
-9. Make a note of the VM IP in the previous step and open the Tomcat Manager Console for a sample Java Application deployment which will automatically instrument it with the AppDynamics Java agent:
+Make a note of the VM IP and open the Tomcat Manager Console for a sample Java Application deployment which will automatically instrument it with the AppDynamics Java agent:
 
 ![alt text](https://github.com/prathjan/images/blob/main/tomcat.png?raw=true)
 
-10. You will now deploy a sample Java application on Tomcat and restart Tomcat so AppDynamic Zero Agent can instrument the app with the Java agent. 
+### Deploy a Java application stack and instrument with Java agent leveraging TFCB
+
+You will now deploy a sample Java application on Tomcat and restart Tomcat so AppDynamic Zero Agent can instrument the app with the Java agent. 
 Use: 
 
      /Supercar-Trader
+
      file://opt/appdynamics/DevNet-Labs/applications/Supercar-Trader/Supercar-Trader.war
+
 
 ![alt text](https://github.com/prathjan/images/blob/main/tomapp.png?raw=true)
 
-11. To see the application insights in AppDynamics Console, you should initiate some load on the deployed services so the Java agent installed can send the metrics back to the AppDynamics Controller:
+ssh cisco@<vm-ip>
+
+Cisco123
+
+Execute: sudo systemctl restart apache-tomcat-7.service
+
+### Generate Application Load
+
+To see the application insights in AppDynamics Console, you should initiate some load on the deployed services so the Java agent installed can send the metrics back to the AppDynamics Controller:
 
 ssh cisco@<vm-ip>
 
@@ -206,9 +240,15 @@ Cisco123
 
 Execute: /opt/appdynamics/DevNet-Labs/applications/Load-Generator/phantomjs/start_load.sh
 
-12. You will now log into AppDynamics console and examine the insights for the Java Application that you just deployed: 
+### View Application Insights in AppDynamics and Intersight
+
+You will now log into AppDynamics console and examine the insights for the Java Application that you just deployed: 
 
 ![alt text](https://github.com/prathjan/images/blob/main/appdapp.png?raw=true)
+
+You will log into Intersight and view Full Stack Observability from Java services to Infrastructure conponents:
+
+![alt text](https://github.com/prathjan/images/blob/main/inter.png?raw=true)
 
 ### De-provisioning
 
