@@ -1,4 +1,4 @@
-# Deploying AppDynamics Java Agents with Cisco Intersight Service for Terraform on vSphere Infrastructure 
+# Deploying AppDynamics Java Agents with Cisco Intersight Service for Terraform 
 ## Contents
         Use Case
 
@@ -15,8 +15,6 @@
         Generate Application Load
 
         View Application Insights in AppDynamics and Intersight
-
-        Try with a Sandbox
 
 
 ### Use Case
@@ -266,8 +264,3 @@ Destroy and remove from TFCB: appd_globalvar
 
 Destroy and remove from TFCB: appd_appstack
 
-### Try with a Sandbox
-
-A sandbox covering a lot of the above concepts can be found here:
-
-TBD
