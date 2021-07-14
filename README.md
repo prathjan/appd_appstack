@@ -1,6 +1,6 @@
 # Deploying AppDynamics Java Agents with Cisco Intersight Service for Terraform on vSphere Infrastructure 
 ## Contents
-        Use Cases
+        Use Case
         Pre-requisites
         Intersight Target configuration for AppDynamics and on prem entities
         Setting up TFCB Workspaces
@@ -11,7 +11,7 @@
         Try with a Sandbox
 
 
-### Use Cases
+### Use Case
 
 * As a DevOps and App developer, use IST (Intersight Service for Terraform) to instrument your Java Apps with AppDynamics Java agents
 
@@ -232,7 +232,7 @@ Execute: sudo systemctl restart apache-tomcat-7.service
 
 ### Generate Application Load
 
-To see the application insights in AppDynamics Console, you should initiate some load on the deployed services so the Java agent installed can send the metrics back to the AppDynamics Controller:
+To see the application insights in AppDynamics Console, you should initiate some load on the deployed services so the Java agent installed can send the application performance metrics back to the AppDynamics Controller:
 
 ssh cisco@<vm-ip>
 
