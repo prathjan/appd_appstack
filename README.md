@@ -15,7 +15,7 @@
         Generate Application Load
 
         View Application Insights in AppDynamics and Intersight
-        
+
         Try with a Sandbox
 
 
@@ -29,7 +29,7 @@
 
 ### Pre-requisites
 
-1. The VM template that you provision in Step 5 below will have a user "cisco/Cisco123" provisioned. Terraform scripts will use this user credentials to provision the VM.
+1. The VM template that you provision in Step 5 below will have a user "cisco/Cisco123" provisioned. Terraform scripts will use this user credentials to remotely run installation scripts in the VM.
 
 2. Sign up for a user account on Intersight.com. You will need Premier license as well as IWO license to complete this use case. 
 
