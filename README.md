@@ -58,7 +58,7 @@ You will log into your Intersight account and create the following targets. Plea
 
 ### Setting up TFCB Workspaces
 
-1. If you are leveraging CiscoDevNet organization in app.terraform,io, please go to Step 2. Else go to Step 3.
+1. If you are leveraging CiscoDevNet organization in app.terraform,io, please go to Step 3. Else go to Step 2.
 
 2. If you have your own TFCB organization and would like to use that, you will have to change the terraform configuration to account for this. Please clone the following repos and create your own corresponding GIT repos. Look for CiscoDevNet org references in the TF files and replace with your own organization:
 
@@ -119,9 +119,9 @@ Go to Step 4.
 
 3. You will set up the following workspaces in TFCB and link to the VCS repos specified. You will set the execution mode as noted below. Also, please use the workspace names provided since there are dependencies defined around it:
 
-    appd_globalvar -> <your_repo_appd_globalvar.git> -> Execution mode as Remote
+    appd_globalvar -> https://github.com/prathjan/appd_globalvar.git -> Execution mode as Remote
 
-    appd_appstack -> <your_repo_appd_appstack.git> -> Execution mode as Agent
+    appd_appstack -> https://github.com/prathjan/appd_appstack.git -> Execution mode as Agent
 
 Go to Step 4.
 
