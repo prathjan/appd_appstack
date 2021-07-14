@@ -1,13 +1,21 @@
 # Deploying AppDynamics Java Agents with Cisco Intersight Service for Terraform on vSphere Infrastructure 
 ## Contents
         Use Case
+
         Pre-requisites
+
         Intersight Target configuration for AppDynamics and on prem entities
+
         Setting up TFCB Workspaces
+
         Retrieve Java agent artifacts using AppDynamics Controller ZFI API's leveraging TFCB
+
         Deploy a Java application stack and instrument with Java agent leveraging TFCB
+
         Generate Application Load
+
         View Application Insights in AppDynamics and Intersight
+        
         Try with a Sandbox
 
 
